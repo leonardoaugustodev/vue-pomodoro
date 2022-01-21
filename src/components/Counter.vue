@@ -1,15 +1,22 @@
 <template>
   <div class="counter">
+    <!-- <div class="circle outside shadow"></div> -->
     <div class="circle outside">
       <div class="circle inside">
-        <span class="time">50:00</span>
+        <ProgressCircular />
+        <!-- <span class="time">50:00</span> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import ProgressCircular from './Progress_Circular.vue';
+
 export default {
+  components:{
+    ProgressCircular
+  },
   data () {
     return {
     }
@@ -22,8 +29,8 @@ export default {
 
 <style scoped>
 .counter{
-  height: 500px;
-  width: 500px;
+  height: 400px;
+  width: 400px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,19 +49,9 @@ export default {
   background: #586097;
 
   background: linear-gradient(135deg, #131732, #292b52);
+  box-shadow: -30px -30px 60px #393c7280, 30px 30px 60px #13173280;
+  
 
-  /* box-shadow: 10px 10px 100px 9px rgba(19,23,50,0.75); */
-  /* -webkit-box-shadow: 10px 10px 100px 9px rgba(19,23,50,0.75); */
-  /* -moz-box-shadow: 10px 10px 100px 9px rgba(19,23,50,0.75); */
- 
-
-}
-
-.outside:before{
-  box-shadow: 10px 10px 10px 9px rgba(190, 48, 136, 0.75);
-}
-.ouside:after{
-  box-shadow: 10px 10px 10px 9px rgba(19,23,50,0.75);
 }
 
 .inside{
