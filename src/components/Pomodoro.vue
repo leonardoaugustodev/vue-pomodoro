@@ -93,7 +93,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .container{
   height: calc(100% - 160px);

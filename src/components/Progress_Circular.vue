@@ -25,11 +25,6 @@ export default {
       type: Number,
       default: 0.15
     },
-
-    // progress: {
-    //   type: Number,
-    //   default: 0.15
-    // },
   },
   data() {
     return {

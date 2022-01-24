@@ -1,8 +1,5 @@
 <template>
   <div class="counter">
-    <!-- <button @click="addProgress">Add</button> -->
-    <!-- <button @click="removeProgress">Remove</button> -->
-    <!-- <div class="circle outside shadow"></div> -->
     <div class="circle outside">
       <div class="circle inside">
         <ProgressCircular
@@ -10,7 +7,6 @@
           :max="seconds"
           :remaining="remainingSeconds"
         />
-        <!-- <span class="time">50:00</span> -->
       </div>
     </div>
   </div>
