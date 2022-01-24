@@ -7,14 +7,13 @@
       <button @click.prevent="selectInterval('long break')" :class="{active: isActive('long break')}">long break</button>
     </div>
     <div class="counter">
-      {{minutes}}
       <Counter ref="counter" :minutes="minutes"/>
     </div>
     <div class="actions">
-      <button @click.prevent="start">Start</button>
-      <button @click.prevent="pause">Pause</button>
-      <button @click.prevent="resume">Resume</button>
-      <button>Settings</button>
+      <button class="button start" v-if="showStartButton" @click.prevent="start">Start</button>
+      <button class="button resume" v-if="showResumeButton" @click.prevent="resume">Resume</button>
+      <button class="button pause" v-if="showPauseButton" @click.prevent="pause">Pause</button>
+      <button class="button reset" v-if="showResetButton" @click.prevent="reset">Reset</button>
     </div>
   </div>
 </template>
@@ -35,7 +34,11 @@ export default {
         'pomodoro': 25,
         'short break': 5,
         'long break': 15
-      }
+      },
+      showStartButton: true,
+      showPauseButton: false,
+      showResumeButton: false,
+      showResetButton: false
     }
   },
   methods: {
@@ -47,18 +50,43 @@ export default {
     selectInterval(intervalName){
       this.active = intervalName;
       this.minutes = this.intervalMap[intervalName]
+      this.reset();
     },
 
     start(){
-      this.$refs.counter.setStart(false);
+      this.$refs.counter.start();
+
+      this.showStartButton = false;
+      this.showResumeButton = false;
+      this.showPauseButton = true;
+      this.showResetButton = true;
     },
 
     pause(){
-      this.$refs.counter.setPause();
+      this.$refs.counter.pause();
+
+      this.showStartButton = false;
+      this.showResumeButton = true;
+      this.showPauseButton = false;
+      this.showResetButton = true;
     },
 
     resume(){
-      this.$refs.counter.setStart(true);
+      this.$refs.counter.resume();
+
+      this.showStartButton = false;
+      this.showResumeButton = false;
+      this.showPauseButton = true;
+      this.showResetButton = true;
+    },
+
+    reset(){
+      this.$refs.counter.reset();
+
+      this.showStartButton = true;
+      this.showResumeButton = false;
+      this.showPauseButton = false;
+      this.showResetButton = false;
     }
   }
 
@@ -112,6 +140,24 @@ button:hover{
 button.active, button.active:hover {  
   background: #f87070;
   color: #1e223f;
+}
+
+button.start {
+  background: #adf870;
+}
+
+button.pause {
+  background: #f8a770;
+  color: #333;
+}
+
+button.resume {
+  background: #adf870;
+}
+
+button.reset {
+  background: #f87070;
+  color: #FFF;
 }
 
 </style>

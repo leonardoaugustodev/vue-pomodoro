@@ -1,7 +1,7 @@
 <template>
   <div class="circular">
     <div class="inner"></div>
-    <div class="number">{{progressPercent}}</div>
+    <div class="number">{{progressToShow}}</div>
     <div class="circle">
       <div class="bar right">
         <div class="progress" :style="progressLeftClass"></div>
@@ -16,13 +16,24 @@
 <script>
 export default {
   props: {
-    progress: {
+    remaining: {
       type: Number,
       default: 0.15
     },
+
+    max: {
+      type: Number,
+      default: 0.15
+    },
+
+    // progress: {
+    //   type: Number,
+    //   default: 0.15
+    // },
   },
   data() {
-    return {};
+    return {
+    };
   },
   methods: {
     progressRotation(isLeft){
@@ -42,6 +53,10 @@ export default {
        
   },
   computed: {
+
+    progress(){
+      return this.remaining / this.max;
+    },
     
     progressLeftClass: function () {
       return this.progressRotation(true);
@@ -53,6 +68,12 @@ export default {
 
     progressPercent: function () {
       return `${(this.progress * 100).toFixed(2)}%`;
+    },
+
+    progressToShow(){
+      var date = new Date(null);
+      date.setSeconds(this.remaining);
+      return date.toISOString().substr(14, 5);
     }
   }
 };

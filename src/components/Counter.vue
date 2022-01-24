@@ -5,7 +5,11 @@
     <!-- <div class="circle outside shadow"></div> -->
     <div class="circle outside">
       <div class="circle inside">
-        <ProgressCircular ref="progress" :progress="progress" />
+        <ProgressCircular
+          ref="progress"
+          :max="seconds"
+          :remaining="remainingSeconds"
+        />
         <!-- <span class="time">50:00</span> -->
       </div>
     </div>
@@ -26,66 +30,61 @@ export default {
     ProgressCircular,
   },
   created() {
-    this.setTime();
+    this.remainingSeconds = this.seconds;
   },
   data() {
     return {
       progress: 0,
-      startDate: undefined,
-      futureDate: undefined,
+      remainingSeconds: 0,
       interval: undefined,
-      start: false,
-      pause: false,
+      running: false,
+      paused: false,
     };
   },
   methods: {
-    setTime() {
-      if (!this.start) return;
-
+    start() {
       clearInterval(this.interval);
 
-      this.startDate = new Date();
-      this.futureDate = new Date(
-        this.startDate.getTime() + this.minutes * 60000
-      );
+      this.running = true;
+      this.paused = false;
 
       this.interval = setInterval(() => {
-        if (this.pause) {
-          this.futureDate = new Date(
-            this.futureDate.getTime() + 1000
-          );
+        if (this.paused) return;
 
-          return;
+        if (this.remainingSeconds < 0) {
+          this.running = false;
+          clearInterval(this.interval);
         }
 
-        let partialProgress =
-          (this.futureDate.getTime() - new Date().getTime()) /
-          (this.minutes * 60000);
-
-        if (partialProgress > 1) clearInterval(this.interval);
-        else if (partialProgress < 0) partialProgress = 0;
-        this.progress = 1 - partialProgress;
+        this.remainingSeconds = this.remainingSeconds - 1;
       }, 1000);
     },
 
-    setStart(isResume) {
-      this.start = true;
-      this.pause = false;
-
-      if (!isResume) this.setTime();
+    resume() {
+      this.paused = false;
     },
 
-    setPause() {
-      this.pause = true;
-      this.start = false;
+    pause() {
+      this.paused = true;
+    },
+
+    reset() {
+      clearInterval(this.interval);
+      this.running = false;
+      this.paused = false;
+      this.remainingSeconds = this.seconds;
     },
   },
   watch: {
     minutes: function () {
-      this.setTime();
+      this.reset();
     },
   },
-  computed: {},
+  computed: {
+    seconds() {
+      return this.minutes * 60;
+    },
+  },
 };
 </script>
 
