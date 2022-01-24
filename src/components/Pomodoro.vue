@@ -2,14 +2,20 @@
   <div class="container">
     <div class="title">pomodoro</div>
     <div class="buttons">
-      <button @click.prevent="active = 'pomodoro'" :class="{active: isActive('pomodoro')}">pomodoro</button>
-      <button @click.prevent="active = 'short break'" :class="{active: isActive('short break')}">short break</button>
-      <button @click.prevent="active = 'long break'" :class="{active: isActive('long break')}">long break</button>
+      <button @click.prevent="selectInterval('pomodoro')" :class="{active: isActive('pomodoro')}">pomodoro</button>
+      <button @click.prevent="selectInterval('short break')" :class="{active: isActive('short break')}">short break</button>
+      <button @click.prevent="selectInterval('long break')" :class="{active: isActive('long break')}">long break</button>
     </div>
     <div class="counter">
-      <Counter />
+      {{minutes}}
+      <Counter ref="counter" :minutes="minutes"/>
     </div>
-    <div class="settings">settings</div>
+    <div class="actions">
+      <button @click.prevent="start">Start</button>
+      <button @click.prevent="pause">Pause</button>
+      <button @click.prevent="resume">Resume</button>
+      <button>Settings</button>
+    </div>
   </div>
 </template>
 
@@ -23,13 +29,36 @@ export default {
   },
   data () {
     return {
-      active: 'pomodoro'
+      active: 'pomodoro',
+      minutes: 25,
+      intervalMap: {
+        'pomodoro': 25,
+        'short break': 5,
+        'long break': 15
+      }
     }
   },
   methods: {
     isActive(value){
       console.log(value);
       return this.active === value;
+    },
+
+    selectInterval(intervalName){
+      this.active = intervalName;
+      this.minutes = this.intervalMap[intervalName]
+    },
+
+    start(){
+      this.$refs.counter.setStart(false);
+    },
+
+    pause(){
+      this.$refs.counter.setPause();
+    },
+
+    resume(){
+      this.$refs.counter.setStart(true);
     }
   }
 

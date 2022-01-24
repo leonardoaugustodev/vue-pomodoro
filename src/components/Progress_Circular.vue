@@ -26,7 +26,6 @@ export default {
   },
   methods: {
     progressRotation(isLeft){
-      console.log(this.progress);
       let deg = (this.progress * 360) - (isLeft ? 180 : 0);
       
       if(deg < 0) deg = 0;
@@ -35,6 +34,10 @@ export default {
       return {
         'transform': `rotate(${deg}deg)`
       };
+    },
+
+    start(){
+      console.log('start');
     }
        
   },
@@ -49,7 +52,7 @@ export default {
     },
 
     progressPercent: function () {
-      return `${(this.progress * 100).toFixed(0)}%`;
+      return `${(this.progress * 100).toFixed(2)}%`;
     }
   }
 };

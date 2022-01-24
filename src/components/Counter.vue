@@ -5,7 +5,7 @@
     <!-- <div class="circle outside shadow"></div> -->
     <div class="circle outside">
       <div class="circle inside">
-        <ProgressCircular :progress="progress"/>
+        <ProgressCircular ref="progress" :progress="progress" />
         <!-- <span class="time">50:00</span> -->
       </div>
     </div>
@@ -13,80 +13,113 @@
 </template>
 
 <script>
-import ProgressCircular from './Progress_Circular.vue';
+import ProgressCircular from "./Progress_Circular.vue";
 
 export default {
-  components:{
-    ProgressCircular
+  props: {
+    minutes: {
+      type: Number,
+      default: 25,
+    },
   },
-  created(){
-    this.futureDate = new Date(this.now.getTime() + this.minutes * 60000);
-
+  components: {
+    ProgressCircular,
+  },
+  created() {
     this.setTime();
   },
-  data () {
+  data() {
     return {
       progress: 0,
-      minutes: 1,
-      now: new Date(),
-      futureDate: undefined 
-    }
+      startDate: undefined,
+      futureDate: undefined,
+      interval: undefined,
+      start: false,
+      pause: false,
+    };
   },
   methods: {
-    setTime(){
-      let interval = setInterval(() => {
+    setTime() {
+      if (!this.start) return;
 
-        let partialProgress = ((this.futureDate.getTime() - new Date().getTime())/(this.minutes * 60000));
+      clearInterval(this.interval);
 
-        if(partialProgress > 1) clearInterval(interval);
-        else if(partialProgress < 0) partialProgress = 0;
+      this.startDate = new Date();
+      this.futureDate = new Date(
+        this.startDate.getTime() + this.minutes * 60000
+      );
+
+      this.interval = setInterval(() => {
+        if (this.pause) {
+          this.futureDate = new Date(
+            this.futureDate.getTime() + 1000
+          );
+
+          return;
+        }
+
+        let partialProgress =
+          (this.futureDate.getTime() - new Date().getTime()) /
+          (this.minutes * 60000);
+
+        if (partialProgress > 1) clearInterval(this.interval);
+        else if (partialProgress < 0) partialProgress = 0;
         this.progress = 1 - partialProgress;
+      }, 1000);
+    },
 
-        
-      }, 100);
-    }
+    setStart(isResume) {
+      this.start = true;
+      this.pause = false;
+
+      if (!isResume) this.setTime();
+    },
+
+    setPause() {
+      this.pause = true;
+      this.start = false;
+    },
   },
-  computed: {
-    
-  }
-
-}
+  watch: {
+    minutes: function () {
+      this.setTime();
+    },
+  },
+  computed: {},
+};
 </script>
 
 <style scoped>
-.counter{
+.counter {
   height: 400px;
   width: 400px;
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
-.circle{
+.circle {
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.outside{
+.outside {
   height: 100%;
   width: 100%;
   background: #586097;
 
   background: linear-gradient(135deg, #131732, #292b52);
   box-shadow: -30px -30px 60px #393c7280, 30px 30px 60px #13173280;
-  
-
 }
 
-.inside{
+.inside {
   height: 85%;
   width: 85%;
   background: #151932;
 }
 
-.time{
+.time {
   font-size: 80px;
   font-weight: 100;
 }
