@@ -1,13 +1,13 @@
 <template>
   <div class="circular">
     <div class="inner"></div>
-    <div class="number">50%</div>
+    <div class="number">{{progressPercent}}</div>
     <div class="circle">
-      <div class="bar left">
-        <div class="progress"></div>
-      </div>
       <div class="bar right">
-        <div class="progress"></div>
+        <div class="progress" :style="progressLeftClass"></div>
+      </div>
+      <div class="bar left">
+        <div class="progress" :style="progressRightClass"></div>
       </div>
     </div>
   </div>
@@ -15,24 +15,52 @@
 
 <script>
 export default {
-  data() {
-    return {
-      value: 0.5
-    };
+  props: {
+    progress: {
+      type: Number,
+      default: 0.15
+    },
   },
-  methods: {},
-  computed(){
+  data() {
+    return {};
+  },
+  methods: {
+    progressRotation(isLeft){
+      console.log(this.progress);
+      let deg = (this.progress * 360) - (isLeft ? 180 : 0);
+      
+      if(deg < 0) deg = 0;
+      else if(deg > 180) deg = 180;
+
+      return {
+        'transform': `rotate(${deg}deg)`
+      };
+    }
+       
+  },
+  computed: {
     
+    progressLeftClass: function () {
+      return this.progressRotation(true);
+    },
+
+    progressRightClass: function () {
+      return this.progressRotation(false);
+    },
+
+    progressPercent: function () {
+      return `${(this.progress * 100).toFixed(0)}%`;
+    }
   }
 };
 </script>
 
 <style scoped>
 .circular {
-  height: 100px;
-  width: 100px;
+  height: 300px;
+  width: 300px;
   position: relative;
-  border: solid 1px green;
+  /* border: solid 1px green; */
 }
 
 .circular .inner {
@@ -40,10 +68,10 @@ export default {
   z-index: 6;
   top: 50%;
   left: 50%;
-  height: 80px;
-  width: 80px;
-  margin: -40px 0 0 -40px;
-  background: red;
+  height: 280px;
+  width: 280px;
+  margin: -140px 0 0 -140px;
+  background: #151932;
   border-radius: 100%;
 }
 
@@ -53,19 +81,19 @@ export default {
   left: 50%;
   z-index: 10;
   transform: translate(-50%, -50%);
-  font-size: 18px;
+  font-size: 80px;
   font-weight: 500;
-  color: #4158d0;
+  color: #FFF;
 }
 
 .circular .bar {
   position: absolute;
   height: 100%;
   width: 100%;
-  background: #fff;
+  /* background: #f87070; */
   border-radius: 100%;
   -webkit-border-radius: 100%;
-  clip: rect(0px, 100px, 100px, 50px);
+  clip: rect(0px, 300px, 300px, 150px);
 }
 
 .circular .bar .progress {
@@ -74,37 +102,17 @@ export default {
   width: 100%;
   -webkit-border-radius: 100%;
   border-radius: 100%;
-  clip: rect(0, 50px, 100px, 0px);
-  background: #4158d0;
+  clip: rect(0, 150px, 300px, 0px);
+  background: #f87070;
 }
 
-.circle .left .progress {
-  z-index: 1;
-  animation: left 4s linear both;
-}
-
-@keyframes left {
-  100% {
-    transform: rotate(180deg);
-  }
+.circle .left .progress, .circle .right .progress {
+  transition: all 0.5s;
 }
 
 .circle .right {
   transform: rotate(180deg);
   z-index: 3;
 }
-
-.circle .right .progress {
-  animation: right 4s linear both;
-  animation-delay: 4s;;
-}
-
-@keyframes right {
-  100% {
-    transform: rotate(180deg);
-  }
-}
-
-
 
 </style>
